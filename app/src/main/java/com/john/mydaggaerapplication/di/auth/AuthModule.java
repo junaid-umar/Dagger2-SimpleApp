@@ -1,6 +1,6 @@
-package com.john.mydaggaerapplication.di.auth;
+package com.example.daggeradvance.di.auth;
 
-import com.john.mydaggaerapplication.network.auth.AuthApi;
+import com.example.daggeradvance.network.auth.AuthApi;
 
 import dagger.Module;
 import dagger.Provides;
@@ -10,8 +10,7 @@ import retrofit2.Retrofit;
 public class AuthModule {
 
     @Provides
-    static AuthApi provideAuthApi(Retrofit retrofit){
+    static AuthApi provideAuthApi(Retrofit retrofit) {
         return retrofit.create(AuthApi.class);
-
     }
 }

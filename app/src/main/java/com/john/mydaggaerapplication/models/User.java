@@ -1,4 +1,4 @@
-package com.john.mydaggaerapplication.models;
+package com.example.daggeradvance.models;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -9,20 +9,17 @@ public class User {
     @Expose
     private int id;
 
-
     @SerializedName("username")
     @Expose
     private String username;
 
+    @SerializedName("email")
+    @Expose
+    private String email;
 
     @SerializedName("website")
     @Expose
     private String website;
-
-
-    @SerializedName("email")
-    @Expose
-    private String email;
 
     public User(int id, String username, String email, String website) {
         this.id = id;
@@ -32,7 +29,6 @@ public class User {
     }
 
     public User() {
-
     }
 
     public int getId() {
@@ -66,6 +62,4 @@ public class User {
     public void setWebsite(String website) {
         this.website = website;
     }
-
-
 }

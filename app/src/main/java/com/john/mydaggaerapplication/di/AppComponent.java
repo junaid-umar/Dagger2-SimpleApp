@@ -1,11 +1,9 @@
-package com.john.mydaggaerapplication.di;
+package com.example.daggeradvance.di;
 
 import android.app.Application;
 
-
-import androidx.lifecycle.ViewModel;
-
-import com.john.mydaggaerapplication.BaseApplication;
+import com.example.daggeradvance.BaseApplication;
+import com.example.daggeradvance.SessionManager;
 
 import javax.inject.Singleton;
 
@@ -15,13 +13,14 @@ import dagger.android.AndroidInjector;
 import dagger.android.support.AndroidSupportInjectionModule;
 
 @Singleton
-@Component (modules = {
-        AndroidSupportInjectionModule.class,
+@Component(modules = {AndroidSupportInjectionModule.class,
         ActivityBuilderModule.class,
         AppModule.class,
-        ViewModelFactoryModule.class,
+        ViewModelFactoryModule.class
 })
 public interface AppComponent extends AndroidInjector<BaseApplication> {
+
+    SessionManager sessionManager();
 
     @Component.Builder
     interface Builder {

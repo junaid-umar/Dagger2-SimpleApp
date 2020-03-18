@@ -1,17 +1,16 @@
-package com.john.mydaggaerapplication.di;
+package com.example.daggeradvance.di;
 
 import androidx.lifecycle.ViewModelProvider;
 
-import com.john.mydaggaerapplication.viewmodels.ViewModelProviderFactory;
+import com.example.daggeradvance.viewmodels.ViewModelProviderFactory;
 
 import dagger.Binds;
-import dagger.BindsInstance;
 import dagger.Module;
 
 @Module
 public abstract class ViewModelFactoryModule {
-    @Binds
-    public abstract ViewModelProvider.Factory bindModelViewFactory(ViewModelProviderFactory modelProviderFactory);
 
+    @Binds
+    abstract ViewModelProvider.Factory bindViewModelFactory(ViewModelProviderFactory providerFactory);
 
 }

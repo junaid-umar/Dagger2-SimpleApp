@@ -1,9 +1,6 @@
-package com.john.mydaggaerapplication.ui.auth;
+package com.example.daggeradvance.ui.auth;
 
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
-
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -12,26 +9,25 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Switch;
-import android.widget.Toast;
+
+import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.RequestManager;
-import com.john.mydaggaerapplication.R;
-import com.john.mydaggaerapplication.models.User;
-import com.john.mydaggaerapplication.viewmodels.ViewModelProviderFactory;
+import com.example.daggeradvance.R;
+import com.example.daggeradvance.ui.main.MainActivity;
+import com.example.daggeradvance.viewmodels.ViewModelProviderFactory;
 
 import javax.inject.Inject;
 
 import dagger.android.support.DaggerAppCompatActivity;
 
-import static com.john.mydaggaerapplication.ui.auth.AuthResource.AuthStatus.LOADING;
-
 public class AuthActivity extends DaggerAppCompatActivity implements View.OnClickListener {
-
     private static final String TAG = "AuthActivity";
+
     private AuthViewModel authViewModel;
-    private EditText userid;
+    private EditText userId;
     private ProgressBar progressBar;
+
     @Inject
     ViewModelProviderFactory providerFactory;
 
@@ -45,92 +41,73 @@ public class AuthActivity extends DaggerAppCompatActivity implements View.OnClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth);
-        userid = findViewById(R.id.user_id_input);
-        progressBar = findViewById(R.id.progress_bar);
+
+        userId = findViewById(R.id.user_id_input);
         findViewById(R.id.login_button).setOnClickListener(this);
-
-
         authViewModel = new ViewModelProvider(this, providerFactory).get(AuthViewModel.class);
 
+        progressBar = findViewById(R.id.progress_bar);
+        subscribeObserver();
         setLogo();
-        subsribeObservers();
-
-
     }
 
-    private void subsribeObservers() {
+    private void subscribeObserver() {
+        authViewModel.observeSession().observe(this, userResource -> {
 
-        authViewModel.observeUser().observe(this, new Observer<AuthResource<User>>() {
-            @Override
-            public void onChanged(AuthResource<User> userAuthResource) {
-                if (userAuthResource != null) {
-
-                    switch (userAuthResource.status) {
-                        case LOADING: {
-                            showProgressBar(true);
-                            break;
-                        }
-
-                        case AUTHENTICATED: {
-                            showProgressBar(false);
-                            Log.d(TAG, "Login Success");
-                            break;
-                        }
-
-                        case NOT_AUTHENTICATED: {
-                            showProgressBar(false);
-                            Log.d(TAG, "Login Failed");
-                            break;
-                        }
-
-                        case ERROR: {
-                            showProgressBar(false);
-                            Toast.makeText(AuthActivity.this, userAuthResource.message, Toast.LENGTH_SHORT).show();
-                            break;
-                        }
-
-
+            if (userResource != null) {
+                switch (userResource.status) {
+                    case LOADING: {
+                        showProgressBar(true);
+                        break;
+                    }
+                    case AUTHENTICATED: {
+                        Log.d(TAG, "subscribeObserver: " + userResource.data.getEmail());
+                        showProgressBar(false);
+                        onLoginSuccess();
+                        break;
                     }
 
+                    case ERROR: {
+                        showProgressBar(false);
+                        break;
+                    }
+                    case NOT_AUTHENTICATED: {
+                        showProgressBar(false);
+
+                        break;
+                    }
                 }
             }
-
         });
+    }
 
+    private void onLoginSuccess() {
+        startActivity(new Intent(AuthActivity.this, MainActivity.class));
     }
 
     private void showProgressBar(boolean isVisible) {
-        if (isVisible) {
-            progressBar.setVisibility(View.VISIBLE);
-        } else {
-            progressBar.setVisibility(View.INVISIBLE);
-
-        }
+        progressBar.setVisibility(isVisible ? View.VISIBLE : View.INVISIBLE);
     }
-
 
     private void setLogo() {
-        requestManager
-                .load(logo)
+        requestManager.load(logo)
                 .into((ImageView) findViewById(R.id.login_logo));
     }
-
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.login_button:
-                attemptLogin();
+
+                loginUser();
                 break;
         }
     }
 
-
-    private void attemptLogin() {
-        if (TextUtils.isEmpty(userid.getText().toString())) {
+    private void loginUser() {
+        if (TextUtils.isEmpty(userId.getText().toString())) {
             return;
-        } else {
-            authViewModel.authWithId(Integer.parseInt(userid.getText().toString()));
         }
+        authViewModel.authenticateWithId(Integer.parseInt(userId.getText().toString()));
     }
 }

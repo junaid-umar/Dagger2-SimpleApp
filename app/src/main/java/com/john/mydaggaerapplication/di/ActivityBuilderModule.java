@@ -1,8 +1,9 @@
-package com.john.mydaggaerapplication.di;
+package com.example.daggeradvance.di;
 
-import com.john.mydaggaerapplication.di.auth.AuthModule;
-import com.john.mydaggaerapplication.di.auth.AuthViewModelModule;
-import com.john.mydaggaerapplication.ui.auth.AuthActivity;
+import com.example.daggeradvance.di.auth.AuthModule;
+import com.example.daggeradvance.di.auth.AuthViewModelModule;
+import com.example.daggeradvance.ui.auth.AuthActivity;
+import com.example.daggeradvance.ui.main.MainActivity;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
@@ -11,10 +12,14 @@ import dagger.android.ContributesAndroidInjector;
 public abstract class ActivityBuilderModule {
 
     @ContributesAndroidInjector(
-            modules = {AuthViewModelModule.class, AuthModule.class}
+            modules = {
+                    AuthViewModelModule.class,
+                    AuthModule.class
+            }
     )
     abstract AuthActivity contributeAuthActivity();
 
-
+    @ContributesAndroidInjector
+    abstract MainActivity contributeMainActivity();
 
 }
