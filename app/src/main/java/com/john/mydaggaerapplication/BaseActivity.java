@@ -14,11 +14,12 @@ import dagger.android.support.DaggerAppCompatActivity;
 public abstract class BaseActivity extends DaggerAppCompatActivity {
 
     @Inject
-    SessionManager sessionManager;
+    public SessionManager sessionManager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        subscribeObserver();
     }
 
     private void subscribeObserver() {

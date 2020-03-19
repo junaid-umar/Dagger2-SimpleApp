@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 
 import com.example.daggeradvance.models.User;
-import com.example.daggeradvance.network.Resource;
+import com.example.daggeradvance.ui.auth.AuthResource;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -13,16 +13,16 @@ import javax.inject.Singleton;
 public class SessionManager {
     private static final String TAG = "SessionManager";
 
-    private MediatorLiveData<Resource<User>> cachedUser = new MediatorLiveData<>();
+    private MediatorLiveData<AuthResource<User>> cachedUser = new MediatorLiveData<>();
 
     @Inject
     public SessionManager() {
 
     }
 
-    public void authenticateWithId(final LiveData<Resource<User>> source) {
+    public void authenticateWithId(final LiveData<AuthResource<User>> source) {
         if (cachedUser != null) {
-            cachedUser.setValue(Resource.loading(null));
+            cachedUser.setValue(AuthResource.loading(null));
 
             cachedUser.addSource(source, userResource -> {
                 cachedUser.setValue(userResource);
@@ -32,10 +32,10 @@ public class SessionManager {
     }
 
     public void logOut() {
-        cachedUser.setValue(Resource.signOut());
+        cachedUser.setValue(AuthResource.signOut());
     }
 
-    public MediatorLiveData<Resource<User>> getCachedUser() {
+    public MediatorLiveData<AuthResource<User>> getCachedUser() {
         return cachedUser;
     }
 }

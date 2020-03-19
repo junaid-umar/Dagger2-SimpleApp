@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.daggeradvance.SessionManager;
 import com.example.daggeradvance.models.User;
-import com.example.daggeradvance.network.Resource;
 import com.example.daggeradvance.network.auth.AuthApi;
 
 import javax.inject.Inject;
@@ -33,7 +32,7 @@ public class AuthViewModel extends ViewModel {
         sessionManager.authenticateWithId(getUserWithId(userId));
     }
 
-    private LiveData<Resource<User>> getUserWithId(int userId) {
+    private LiveData<AuthResource<User>> getUserWithId(int userId) {
 
         return LiveDataReactiveStreams.fromPublisher(
                 authApi.getUser(userId)
@@ -42,18 +41,18 @@ public class AuthViewModel extends ViewModel {
                             error.setId(-1);
                             return error;
                         })
-                        .map((Function<User, Resource<User>>) user -> {
+                        .map((Function<User, AuthResource<User>>) user -> {
                             if (userId == -1) {
-                                return Resource.error("", null);
+                                return AuthResource.error("", null);
                             } else {
-                                return Resource.authenticated(user);
+                                return AuthResource.authenticated(user);
                             }
                         })
                         .subscribeOn(Schedulers.io()));
     }
 
 
-    public LiveData<Resource<User>> observeSession() {
+    public LiveData<AuthResource<User>> observeSession() {
         return sessionManager.getCachedUser();
     }
 }
